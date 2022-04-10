@@ -1,10 +1,10 @@
+cmake_minimum_required (VERSION 3.0)
+
 if ( NOT DEFINED CMAKE_BUILD_TYPE )
   set( CMAKE_BUILD_TYPE Release CACHE STRING "Build type" )
 endif ()
 
 project (glew C)
-
-cmake_minimum_required (VERSION 2.8.12)
 
 include(GNUInstallDirs)
 
@@ -22,13 +22,13 @@ endif(POLICY CMP0072)
 
 set(CMAKE_DEBUG_POSTFIX d)
 
-option (BUILD_UTILS "utilities" ON)
+option (BUILD_UTILS "utilities" OFF)
 option (GLEW_REGAL "Regal mode" OFF)
 option (GLEW_OSMESA "OSMesa mode" OFF)
 if (APPLE)
     option (BUILD_FRAMEWORK "Build Framework bundle for OSX" OFF)
 endif ()
-option (GLEW_X11 "X11 mode" ON)
+option (GLEW_X11 "X11 mode" OFF)
 option (GLEW_EGL "EGL mode" OFF)
 option (BUILD_SHARED_LIBS "install/link shared instead of static libs" ON)
 

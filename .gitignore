@@ -16,3 +16,4 @@
 /tmp
 /out
 .DS_Store*
+/build/vc17
