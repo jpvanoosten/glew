@@ -133,29 +133,27 @@ endif ()
 add_library (glew ${GLEW_PUBLIC_HEADERS_FILES} ${GLEW_SRC_FILES})
 
 if(BUILD_SHARED_LIBS)
-  set_target_properties (glew PROPERTIES COMPILE_DEFINITIONS "GLEW_BUILD" OUTPUT_NAME "${GLEW_LIB_NAME}" PREFIX "${DLL_PREFIX}"
+  set_target_properties (glew PROPERTIES OUTPUT_NAME "${GLEW_LIB_NAME}" PREFIX "${DLL_PREFIX}"
                                        VERSION ${GLEW_VERSION}
                                        SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR})
+    target_compile_definitions (glew PUBLIC GLEW_BUILD)									   
 else()
-  set_target_properties (glew PROPERTIES COMPILE_DEFINITIONS "GLEW_STATIC" OUTPUT_NAME "${GLEW_LIB_NAME}" PREFIX lib)
+  set_target_properties (glew PROPERTIES OUTPUT_NAME "${GLEW_LIB_NAME}" PREFIX lib)
+  target_compile_definitions (glew PUBLIC GLEW_STATIC)
 endif(BUILD_SHARED_LIBS)
 
 target_include_directories ( glew PUBLIC $<BUILD_INTERFACE:${GLEW_DIR}/include> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> )
 
 if (MSVC)
   # add options from visual studio project
-  if(BUILD_SHARED_LIBS)
-  target_compile_definitions (glew PRIVATE "GLEW_BUILD;VC_EXTRALEAN")
-  else()
-  target_compile_definitions (glew PRIVATE "GLEW_STATIC;VC_EXTRALEAN")
-  endif(BUILD_SHARED_LIBS)
-  target_link_libraries (glew PRIVATE -BASE:0x62AA0000)
+  target_compile_definitions (glew PRIVATE VC_EXTRALEAN)
+  # target_link_libraries (glew PRIVATE -BASE:0x62AA0000)
   # kill security checks which are dependent on stdlib
   target_compile_options (glew PRIVATE -GS-)
   # remove stdlib dependency
-  target_link_libraries (glew PRIVATE -nodefaultlib -noentry)
-  target_link_libraries (glew PRIVATE libvcruntime.lib)
-  target_link_libraries (glew PRIVATE msvcrt.lib )
+  # target_link_libraries (glew PRIVATE -nodefaultlib -noentry)
+  # target_link_libraries (glew PRIVATE libvcruntime.lib)
+  # target_link_libraries (glew PRIVATE msvcrt.lib )
   string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
 elseif (WIN32 AND ((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang")))
   # remove stdlib dependency on windows with GCC and Clang (for similar reasons
