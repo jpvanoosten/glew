@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.1)
 
 if ( NOT DEFINED CMAKE_BUILD_TYPE )
   set( CMAKE_BUILD_TYPE Release CACHE STRING "Build type" )
@@ -149,19 +149,19 @@ if (MSVC)
   else()
   target_compile_definitions (glew PRIVATE "GLEW_STATIC;VC_EXTRALEAN")
   endif(BUILD_SHARED_LIBS)
-  target_link_libraries (glew LINK_PRIVATE -BASE:0x62AA0000)
+  target_link_libraries (glew PRIVATE -BASE:0x62AA0000)
   # kill security checks which are dependent on stdlib
   target_compile_options (glew PRIVATE -GS-)
   # remove stdlib dependency
-  target_link_libraries (glew LINK_PRIVATE -nodefaultlib -noentry)
-  target_link_libraries (glew LINK_PRIVATE libvcruntime.lib)
-  target_link_libraries (glew LINK_PRIVATE msvcrt.lib )
+  target_link_libraries (glew PRIVATE -nodefaultlib -noentry)
+  target_link_libraries (glew PRIVATE libvcruntime.lib)
+  target_link_libraries (glew PRIVATE msvcrt.lib )
   string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
 elseif (WIN32 AND ((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang")))
   # remove stdlib dependency on windows with GCC and Clang (for similar reasons
   # as to MSVC - to allow it to be used with any Windows compiler)
   target_compile_options (glew PRIVATE -fno-builtin -fno-stack-protector)
-  target_link_libraries (glew LINK_PRIVATE -nostdlib)
+  target_link_libraries (glew PRIVATE -nostdlib)
 endif ()
 
 if (BUILD_FRAMEWORK)
@@ -177,7 +177,7 @@ if (BUILD_FRAMEWORK)
   )
 endif()
 
-target_link_libraries (glew LINK_PUBLIC ${GLEW_LIBRARIES})
+target_link_libraries (glew PUBLIC ${GLEW_LIBRARIES})
 
 if(CMAKE_VERSION VERSION_LESS 2.8.12)
   set(MAYBE_EXPORT "")
@@ -243,7 +243,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/glew.pc
 
 if(WIN32 AND MSVC AND (NOT MSVC_VERSION LESS 1600) AND (NOT CMAKE_VERSION VERSION_LESS "3.1"))
     install(
-        FILES $<TARGET_PDB_FILE:glew>
+        FILES $<$<BOOL:${BUILD_SHARED_LIBS}>:$<TARGET_PDB_FILE:glew>>
         DESTINATION ${CMAKE_INSTALL_LIBDIR}
         CONFIGURATIONS Debug RelWithDebInfo
     )
