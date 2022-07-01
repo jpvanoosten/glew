@@ -136,7 +136,7 @@ if(BUILD_SHARED_LIBS)
   set_target_properties (glew PROPERTIES OUTPUT_NAME "${GLEW_LIB_NAME}" PREFIX "${DLL_PREFIX}"
                                        VERSION ${GLEW_VERSION}
                                        SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR})
-    target_compile_definitions (glew PUBLIC GLEW_BUILD)									   
+    target_compile_definitions (glew PRIVATE GLEW_BUILD)									   
 else()
   set_target_properties (glew PROPERTIES OUTPUT_NAME "${GLEW_LIB_NAME}" PREFIX lib)
   target_compile_definitions (glew PUBLIC GLEW_STATIC)
@@ -239,7 +239,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/glew.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 
-if(WIN32 AND MSVC AND (NOT MSVC_VERSION LESS 1600) AND (NOT CMAKE_VERSION VERSION_LESS "3.1"))
+if(WIN32 AND MSVC AND (NOT MSVC_VERSION LESS 1600))
     install(
         FILES $<$<BOOL:${BUILD_SHARED_LIBS}>:$<TARGET_PDB_FILE:glew>>
         DESTINATION ${CMAKE_INSTALL_LIBDIR}
