@@ -136,7 +136,7 @@ if(BUILD_SHARED_LIBS)
   set_target_properties (glew PROPERTIES OUTPUT_NAME "${GLEW_LIB_NAME}" PREFIX "${DLL_PREFIX}"
                                        VERSION ${GLEW_VERSION}
                                        SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR})
-    target_compile_definitions (glew PUBLIC GLEW_BUILD)									   
+    target_compile_definitions (glew PRIVATE GLEW_BUILD)
 else()
   set_target_properties (glew PROPERTIES OUTPUT_NAME "${GLEW_LIB_NAME}" PREFIX lib)
   target_compile_definitions (glew PUBLIC GLEW_STATIC)
